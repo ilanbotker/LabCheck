@@ -18,7 +18,7 @@ class WelcomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/lab_logo.png', height: 100.0, width: 100.0,), // Replace with your logo image
+            Image.asset('LOGO.png', height: 100.0, width: 100.0,), // Replace with your logo image
             SizedBox(height: 50),
             _buildLabButton(
               context,

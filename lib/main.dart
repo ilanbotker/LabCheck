@@ -15,11 +15,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Initialize Firebase
-  //await Firebase.initializeApp(
-    //options: DefaultFirebaseOptions.currentPlatform,
-  //);
-
   // Run the app
   runApp(MyApp());
 
