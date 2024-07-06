@@ -22,6 +22,7 @@ class ComputerCheck {
   );
 
   String? checkerName;
+  String? labNumber;
 
   // Method to convert the object to a map for Firebase
   Map<String, dynamic> toJson() {
@@ -37,6 +38,7 @@ class ComputerCheck {
       'hasGarbageCan': hasGarbageCan,
       'computers': computers,
       'checkerName': checkerName,
+      'labNumber': labNumber,
     };
   }
 }

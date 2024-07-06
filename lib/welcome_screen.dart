@@ -12,7 +12,7 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('Lab Check App')),
+        title: Center(child: Text('בדיקת מעבדה יומית')),
       ),
       body: Center(
         child: Column(
@@ -22,19 +22,19 @@ class WelcomeScreen extends StatelessWidget {
             SizedBox(height: 50),
             _buildLabButton(
               context,
-              'Computer Lab',
+              'מעבדת מחשבים',
               ComputerLabScreen(),
             ),
             SizedBox(height: 30),
             _buildLabButton(
               context,
-              'Electronics Lab',
+              'מעבדת אלקטרוניקה',
               ElectronicsLabScreen(),
             ),
             SizedBox(height: 30),
             _buildLabButton(
               context,
-              'Electrical Lab',
+              'מעבדת חשמל',
               ElectricalLabScreen(),
             ),
           ],

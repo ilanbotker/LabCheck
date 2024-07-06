@@ -11,11 +11,12 @@ class _ComputerLabScreenState extends State<ComputerLabScreen> {
   final _formKey = GlobalKey<FormState>();
   final _computerCheck = ComputerCheck();
   final _databaseService = DatabaseService();
+  String? _selectedLab; // To store the selected lab number
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Computer Lab Check')),
+      appBar: AppBar(title: Text('בדיקת מעבדת מחשבים')),
       body: SingleChildScrollView( // Make content scrollable
         child: Form(
           key: _formKey,
@@ -24,30 +25,94 @@ class _ComputerLabScreenState extends State<ComputerLabScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSectionHeader('Cleanliness'),
-                _buildCheckbox('Lab Washed?', _computerCheck.labWashed, (value) {
+
+                _buildSectionHeader('מספר מעבדה'), // Section header for lab selection
+                DropdownButtonFormField<String>(
+                  value: _selectedLab,
+                  decoration: InputDecoration(labelText: 'בחר מספר מעבדה'),
+                  items: ['222', '223', '231'].map((String lab) {
+                    return DropdownMenuItem<String>(
+                      value: lab,
+                      child: Text(lab),
+                    );
+                  }).toList(),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'בחר מספר מעבדה';
+                    }
+                    return null;
+                  },
+                  onChanged: (newValue) {
+                    setState(() {
+                      _selectedLab = newValue;
+                      _computerCheck.labNumber = _selectedLab;
+                    });
+                  },
+                ),
+
+                _buildSectionHeader('ניקיון'),
+                _buildCheckbox('מעבדה שטופה', _computerCheck.labWashed, (value) {
                   setState(() {
                     _computerCheck.labWashed = value!;
                   });
                 }),
-                _buildCheckbox('Bin Emptied?', _computerCheck.binEmptied, (value) {
+                _buildCheckbox('פח הוחלף', _computerCheck.binEmptied, (value) {
                   setState(() {
                     _computerCheck.binEmptied = value!;
                   });
                 }),
-                // ... Add checkboxes for other cleaning items
+                _buildCheckbox('לוח נקי', _computerCheck.whiteboardCleaned, (value) {
+                  setState(() {
+                    _computerCheck.whiteboardCleaned = value!;
+                  });
+                }),
 
-                _buildSectionHeader('Computing'),
+                _buildSectionHeader('ציוד'),
+
+                _buildCheckbox('פח', _computerCheck.hasGarbageCan, (value) {
+                  setState(() {
+                    _computerCheck.hasGarbageCan = value!;
+                  });
+                }),
+                _buildCheckbox('מטאטא', _computerCheck.hasBroom, (value) {
+                  setState(() {
+                    _computerCheck.hasBroom = value!;
+                  });
+                }),
+                _buildCheckbox('יעה', _computerCheck.hasWiper, (value) {
+                  setState(() {
+                    _computerCheck.hasWiper = value!;
+                  });
+                }),
+                _buildCheckbox('מגב', _computerCheck.hasMop, (value) {
+                  setState(() {
+                    _computerCheck.hasMop = value!;
+                  });
+                }),
+                _buildCheckbox('דלי', _computerCheck.hasBucket, (value) {
+                  setState(() {
+                    _computerCheck.hasBucket = value!;
+                  });
+                }),
+                _buildCheckbox('מחק לוח', _computerCheck.hasWhiteboardEraser, (value) {
+                  setState(() {
+                    _computerCheck.hasWhiteboardEraser = value!;
+                  });
+                }),
+
+
+
+                _buildSectionHeader('מחשבים'),
                 for (int i = 0; i < _computerCheck.computers.length; i++)
                   _buildComputerCheckGroup(i),
 
                 SizedBox(height: 20),
-                _buildSectionHeader('Checker Information'),
+                _buildSectionHeader('שם הבודק'),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Your Name'),
+                  decoration: InputDecoration(labelText: 'שם מלא'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
+                      return 'הכנס שם מלא';
                     }
                     return null;
                   },
@@ -66,20 +131,20 @@ class _ComputerLabScreenState extends State<ComputerLabScreen> {
                           await _databaseService.saveComputerCheck(_computerCheck);
                           // Show success message (e.g., using a SnackBar)
                           ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Check submitted successfully!'))
+                              SnackBar(content: Text('בדיקה נשלחה בהצלחה!'))
                           );
                           // Optionally navigate back to the previous screen
                           Navigator.pop(context);
                         } catch (e) {
-                          print("Error saving check: $e");
+                          print("שגיאה בשליחת הבדיקה: $e");
                           // Show error message to the user
                           ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error submitting check. Please try again.'))
+                              SnackBar(content: Text('שגיאה בשליחת הבדיקה, נסה שנית'))
                           );
                         }
                       }
                     },
-                    child: Text('Submit Check'),
+                    child: Text('שלח בדיקה'),
                   ),
                 ),
               ],
@@ -123,18 +188,38 @@ class _ComputerLabScreenState extends State<ComputerLabScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Computer ${computerIndex + 1}', style: TextStyle(fontWeight: FontWeight.bold)),
-            _buildCheckbox('Drive', _computerCheck.computers[computerIndex]['drive']!, (value) {
+            Text('עמדה ${computerIndex + 1}', style: TextStyle(fontWeight: FontWeight.bold)),
+            _buildCheckbox('כונן', _computerCheck.computers[computerIndex]['drive']!, (value) {
               setState(() {
                 _computerCheck.computers[computerIndex]['drive'] = value!;
               });
             }),
-            _buildCheckbox('Screen', _computerCheck.computers[computerIndex]['screen']!, (value) {
+            _buildCheckbox('מסך', _computerCheck.computers[computerIndex]['screen']!, (value) {
               setState(() {
                 _computerCheck.computers[computerIndex]['screen'] = value!;
               });
             }),
-            // ... Add checkboxes for Mouse, Keyboard, Startup, Internet
+            _buildCheckbox('מקלדת', _computerCheck.computers[computerIndex]['keyboard']!, (value) {
+              setState(() {
+                _computerCheck.computers[computerIndex]['keyboard'] = value!;
+              });
+            }),
+            _buildCheckbox('עכבר', _computerCheck.computers[computerIndex]['mouse']!, (value) {
+              setState(() {
+                _computerCheck.computers[computerIndex]['mouse'] = value!;
+              });
+            }),
+            _buildCheckbox('מערכת הפעלה', _computerCheck.computers[computerIndex]['startup']!, (value) {
+              setState(() {
+                _computerCheck.computers[computerIndex]['startup'] = value!;
+              });
+            }),
+            _buildCheckbox('אינטרנט', _computerCheck.computers[computerIndex]['internet']!, (value) {
+              setState(() {
+                _computerCheck.computers[computerIndex]['internet'] = value!;
+              });
+            }),
+
           ],
         ),
       ),
